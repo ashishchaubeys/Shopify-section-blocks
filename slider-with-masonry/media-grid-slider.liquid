@@ -1,0 +1,499 @@
+{% comment %}
+  Image Gallery Section with Single Container for Masonry and Slider, Managed via Shopify Admin
+{% endcomment %}
+
+{% style %}
+  .media_header {
+      text-align: center;
+      /* padding: 20px; */
+      margin: auto;
+  }
+
+  .media_header p {
+      font-size: 16px;
+      color: #000000;
+      margin: 0;
+      text-transform: uppercase;
+  }
+
+  .media_header h2 {
+      font-size: 40px;
+      color: #000;
+      margin: 20px 0 0;
+  }
+
+  .gallery-container {
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+  }
+
+/* ========================
+   Masonry Grid Layout
+   ======================== */
+.masonry-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.masonry-grid .image_items {
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.masonry-grid .image_items img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Hover zoom effect */
+.masonry-grid .image_items:hover img {
+  transform: scale(1.1);
+}
+
+/* Default 4 columns */
+.masonry-grid .image_items {
+  flex: 1 1 calc(25% - 12px);
+}
+
+/* Dynamically resize based on number of items */
+.masonry-grid[data-count='1'] .image_items {
+  flex: 1 1 100%;
+}
+
+.masonry-grid[data-count='2'] .image_items {
+  flex: 1 1 calc(50% - 8px);
+}
+
+.masonry-grid[data-count='3'] .image_items {
+  flex: 1 1 calc(33.333% - 10px);
+}
+
+.masonry-grid[data-count='4'] .image_items {
+  flex: 1 1 calc(25% - 12px);
+}
+
+
+
+ /* ========================
+   Slider Layout (kept separate)
+   ======================== */
+.slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.slides .image_items {
+  min-width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slides .image_items img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+  .prev,
+  .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 16px;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+  }
+
+  .gallery-container:hover .prev,
+  .gallery-container:hover .next {
+      opacity: 1;
+  }
+
+  .prev {
+      left: 10px;
+  }
+
+  .next {
+      right: 10px;
+  }
+
+  .dots-container {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
+      position: absolute;
+      bottom: 35px;
+      width: 100%;
+      z-index: 10;
+      left: 0;
+  }
+
+  .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: rgb(213 186 186);
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+
+  .dot.active {
+      background-color: #000;
+  }
+
+  #shopify-section-{{ section.id }} {
+      padding: 80px 40px;
+      position: relative;
+  }
+
+
+
+  /* Responsive adjustments */
+  @media screen and (max-width: 1200px) {
+    .masonry-grid .image_items {
+      flex: 1 1 calc(33.333% - 10px);
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .masonry-grid .image_items {
+      flex: 1 1 calc(50% - 8px);
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .slides {
+    overflow: visible;
+  }
+  }
+
+  @media screen and (max-width: 500px) {
+    .masonry-grid .image_items {
+      flex: 1 1 100%;
+    }
+  }
+{% endstyle %}
+<div class="section-stack">
+  <div class="media_header section-header">
+    {% if section.settings.subheading != blank %}
+      <p class="h6">{{ section.settings.subheading }}</p>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+      <h2 class="h2">{{ section.settings.heading }}</h2>
+    {% endif %}
+  </div>
+  <!-- To show dots below the slider image -->
+  <div class="dots-container"></div>
+  <div class="gallery-container {{ section.settings.container }}">
+    <div id="image-gallery" class="masonry-grid">
+      {% for block in section.blocks %}
+        {% if block.type == 'image' and block.settings.image != blank %}
+          <div class="image_items">
+            <img
+              src="{{ block.settings.image | img_url: 'master' }}"
+              alt="{{ block.settings.alt_text | escape }}"
+              class="features--zoom-image zoom-image"
+              loading="lazy"
+            >
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <button class="prev">❮</button>
+    <button class="next">❯</button>
+    <!-- Un-comment below if need the dots over the slider image -->
+    {% comment %} <div class="dots-container"></div> {% endcomment %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const imageGallery = document.getElementById('image-gallery');
+
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+    const dotsContainer = document.querySelector('.dots-container');
+    let isAutoplay = {{ section.settings.autoplay | json }};
+    let currentIndex = 0;
+    let sliderMode = 'none'; // 'none', 'mobile', or 'desktop'
+    let autoplayTimeout = null;
+    const autoplayInterval = {{ section.settings.autoplay_interval | default: 3000 }};
+    const enableSliderMobile = {{ section.settings.enable_slider_mobile | json }};
+    const enableSliderDesktop = {{ section.settings.enable_slider_desktop | json }};
+    const showArrows = {{ section.settings.show_arrows | json }};
+    const showDots = {{ section.settings.show_dots | json }};
+    
+
+    // Create dots for each slide
+    function createDots() {
+      if (!showDots || sliderMode === 'none') {
+        dotsContainer.style.display = 'none';
+        dotsContainer.innerHTML = '';
+        return;
+      }
+      dotsContainer.style.display = 'block';
+      dotsContainer.innerHTML = ''; // Clear existing dots
+      const totalSlides = imageGallery.children.length;
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        if (i === currentIndex) {
+          dot.classList.add('active');
+        }
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlide();
+          updateDots();
+          if (isAutoplay) {
+            stopAutoplay();
+            startAutoplay();
+          }
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    // Update active dot
+    function updateDots() {
+      if (!showDots) return;
+      const dots = dotsContainer.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    // Update slide position
+    function updateSlide() {
+      if (sliderMode !== 'none') {
+        imageGallery.style.transform = `translateX(-${currentIndex * 100}%)`;
+        updateDots();
+      }
+    }
+
+    // Toggle between masonry and slider
+    function toggleSlider() {
+      const isMobile = window.innerWidth <= 768;
+      if (enableSliderMobile && isMobile) {
+        sliderMode = 'mobile';
+        imageGallery.classList.remove('masonry-grid');
+        imageGallery.classList.add('slides');
+        imageGallery.style.transform = `translateX(-${currentIndex * 100}%)`;
+        if (showArrows) {
+          prevButton.style.display = 'block';
+          nextButton.style.display = 'block';
+        } else {
+          prevButton.style.display = 'none';
+          nextButton.style.display = 'none';
+        }
+        createDots();
+        if (isAutoplay) {
+          startAutoplay();
+        }
+      } else if (enableSliderDesktop && !isMobile) {
+        sliderMode = 'desktop';
+        imageGallery.classList.remove('masonry-grid');
+        imageGallery.classList.add('slides');
+        imageGallery.style.transform = `translateX(-${currentIndex * 100}%)`;
+        if (showArrows) {
+          prevButton.style.display = 'block';
+          nextButton.style.display = 'block';
+        } else {
+          prevButton.style.display = 'none';
+          nextButton.style.display = 'none';
+        }
+        createDots();
+        if (isAutoplay) {
+          startAutoplay();
+        }
+      } else {
+        sliderMode = 'none';
+        imageGallery.classList.add('masonry-grid');
+        imageGallery.classList.remove('slides');
+        imageGallery.style.transform = '';
+        prevButton.style.display = 'none';
+        nextButton.style.display = 'none';
+        dotsContainer.style.display = 'none';
+        dotsContainer.innerHTML = ''; // Clear dots in masonry mode
+        stopAutoplay();
+      }
+    }
+
+    // Navigation for slider
+    function goToPrevSlide() {
+      const totalSlides = imageGallery.children.length;
+      if (totalSlides > 0) {
+        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        updateSlide();
+        if (isAutoplay) {
+          stopAutoplay();
+          startAutoplay();
+        }
+      }
+    }
+
+    function goToNextSlide() {
+      const totalSlides = imageGallery.children.length;
+      if (totalSlides > 0) {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        updateSlide();
+        if (isAutoplay) {
+          stopAutoplay();
+          startAutoplay();
+        }
+      }
+    }
+
+    // Autoplay functionality
+    function startAutoplay() {
+      stopAutoplay(); // Clear any existing timeout
+      if (sliderMode !== 'none') {
+        autoplayTimeout = setTimeout(() => {
+          goToNextSlide();
+          startAutoplay();
+        }, autoplayInterval);
+      }
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimeout) {
+        clearTimeout(autoplayTimeout);
+        autoplayTimeout = null;
+      }
+    }
+
+    // Initialize default view based on settings
+    toggleSlider();
+
+    // Event listeners for navigation
+    if (prevButton) {
+      prevButton.addEventListener('click', goToPrevSlide);
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', goToNextSlide);
+    }
+
+    // Update slider visibility on resize
+    window.addEventListener('resize', () => {
+      toggleSlider();
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Image Gallery",
+  "class": "media_slider_section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container",
+      "options": [
+        { "value": "container--lg", "label": "Large" },
+        { "value": "md", "label": "Medium" }
+      ],
+      "default": "container--lg"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "MOMENTS OF MAGIC"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Step inside our world and discover the experiences that make FAO Schwarz truly special."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider_mobile",
+      "label": "Enable Slider on Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider_desktop",
+      "label": "Enable Slider on Desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show Navigation Dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Autoplay Interval (milliseconds)",
+      "min": 1000,
+      "max": 9000,
+      "step": 500,
+      "default": 3000
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt Text",
+          "default": "Image description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Gallery",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}
+
+
