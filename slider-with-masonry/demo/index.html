@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MASONRY & SLIDER</title>
+
+
+</head>
+<body>
+  <div class="header">
+    <p>Step inside our world and discover the experiences that make YOU truly special.</p>
+    <h1>MASONRY & SLIDER</h1>
+  </div>
+
+  <div class="gallery-container">
+    <div class="control-buttons">
+      <button id="apply-slider-mobile">Apply Slider for Mobile</button>
+      <button id="apply-slider-desktop">Apply Slider for Desktop</button>
+      <button id="apply-slider-both">Apply Slider for Both</button>
+      <button id="remove-slider">Remove Slider</button>
+      <button id="autoplay-button">Enable Autoplay</button>
+    </div>
+
+    <!-- MASONRY GRID IMAGES -->
+    <div id="masonry-grid" class="masonry-grid">
+      <img src="assets/pexels-photo-1926769.jpeg" alt="Jellycat Diner" style="--img-index:1">
+      <img src="assets/pexels-photo-8433488.jpeg" alt="Doll nursery" style="--img-index:2">
+      <img src="assets/pexels-photo-33798376.jpeg" alt="Toy soldiers" style="--img-index:3">
+      <img src="assets/pexels-photo-4584598.jpeg" alt="Crazy Aaron's" style="--img-index:4">
+      <img src="assets/pexels-photo-1183266.jpeg" alt="Boutique handbags" style="--img-index:5">
+      <img src="assets/pexels-photo-1549200.jpeg" alt="Build-a-Bear" style="--img-index:6">
+      <img src="assets/pexels-photo-3962337.jpeg" alt="Barbie display" style="--img-index:7">
+      <img src="assets/pexels-photo-1813947.jpeg" alt="Magic section" style="--img-index:8">
+    </div>
+
+    <!-- SLIDER -->
+    <div id="slider-container" class="slider-container">
+      <div class="slides"></div>
+      <button class="prev">❮</button>
+      <button class="next">❯</button>
+    </div>
+  </div>
+
+  <script src="main.jsx"></script>
+  
+</body>
+</html>
