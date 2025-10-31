@@ -1,0 +1,170 @@
+    /* ===============================
+       GLOBAL BASE STYLES
+    ================================ */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #333;
+      margin: 0;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      color: #000;
+      margin: 10px 0 0;
+      letter-spacing: 1px;
+    }
+
+    .gallery-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .control-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      display: inline-block;
+      margin: 0 10px 10px;
+      padding: 10px 20px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #444;
+      transform: translateY(-2px);
+    }
+
+    /* ===============================
+       MASONRY GRID STYLES
+       (Non-conflicting with slider)
+    ================================ */
+    .masonry-grid {
+      column-count: 4;
+      column-gap: 16px;
+      display: block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInGrid 0.8s ease forwards;
+    }
+
+    .masonry-grid img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      break-inside: avoid;
+      opacity: 0;
+      animation: fadeZoomIn 0.6s ease forwards;
+      animation-delay: calc(var(--img-index, 1) * 0.1s);
+    }
+
+    .masonry-grid img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes fadeInGrid {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeZoomIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media screen and (max-width: 1200px) {
+      .masonry-grid { column-count: 3; }
+    }
+
+    @media screen and (max-width: 800px) {
+      .masonry-grid { column-count: 2; }
+    }
+
+    @media screen and (max-width: 500px) {
+      .masonry-grid { column-count: 1; }
+    }
+
+    /* ===============================
+       SLIDER STYLES
+       (Separate from masonry)
+    ================================ */
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+      max-width: 100%;
+      display: none;
+      border-radius: 12px;
+      opacity: 0;
+      animation: fadeInSlider 0.8s ease forwards;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.7s ease-in-out;
+    }
+
+    .slides img {
+      width: 100%;
+      height: auto;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 12px;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeInSlider {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 16px;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 50%;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev { left: 10px; }
+    .next { right: 10px; }
